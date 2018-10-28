@@ -1,0 +1,346 @@
+---
+title: "Homework 3"
+output: html_notebook
+author: name surname
+---
+```{r, echo=FALSE}
+PointsTable <- data.frame(Exercise = c(1,2,"3.1","3.2","3.3","3.4",4,"5A", "5B", "5C", "5D", "5E", "5F", "5G", "TOTAL"),
+                          'Maximum points' = c(5,12,6,2,5,5,10,2,1,1,2,3,4,2, 60),
+                          'Points won'= NA
+                          )
+PointsTable
+```
+
+### Grep 1  
+0.5*8+1 = 5 points  
+
+Write grep expressions that will return the following:  
+
+- elements that contain a phone number with an extension (the letter x or X followed by four digits).  
+```{r}
+phonenumbers<-c("85758934x3456","584309x333", "620876539", "jfkldag")
+grep("[xX][0-9]{4}", phonenumbers, value = TRUE)
+```
+
+- elements that begin with three digits followed by a blank. Your answer must use the { and } repetition specifier.  
+```{r}
+
+grep("^{3}0-9\\s, numericaldata) #???? kako se radi blank?
+```
+
+
+- elements that contain a date. Hint: this is a very simple pattern. It does not have to work for any year before 2000.  
+```{r}
+#imma try
+somenumbers<-c(15062000, "15.06.2017", "07-05-2015", "2000", "200054389", "58420501845", "fjaklhdfjk")
+grep("[0-3][0-9]\\.[0-1][0-9]\\.20[0-1][0-8]", somenumbers, value = TRUE)
+```
+
+
+- elements containing a vowel (a, e, i, o, or u) followed by a single character followed by the same vowel again. Thus, it will find “eve” or “adam” but not “vera”.
+```{r}
+vowels <- c("eve","ibikldsa","vera")
+grep("a.a|e.e|i.i|o.o|u.u", vowels, value = TRUE)
+```
+
+- elements that do not begin with a capital S.  
+```{r}
+capitalS<-c("Sonja","nisamsanja","sonja","Sanja","sanja")
+grep("^[^S]", capitalS, value=TRUE)
+```
+
+
+- elements that contain CA in either uppercase or lowercase.
+```{r}
+cas<-c("CAr", "car", "cArt","Cameleon", "bawlingball")
+grep("[cC][aA]", cas, value = TRUE)
+```
+
+
+- elements that contain an email address (they have an @ in them), preceded by a four digit number.  
+
+```{r}
+email<-c("somename0000@gmail.com", "coolname1234@gmail.com","notcool@yahoo.com")
+grep("[0-9]{4}@",email,value=TRUE) #wasn't sure the e-mail or the @ be proceeded by a four digit number?
+```
+
+- elements that do not contain the word Sep. (including the period).
+```{r}
+seps<-c("Sep. tember", "Sep.","notSeptember", "Separation", "Sep.aration","testword", "notSep.aration")
+grep("[^Sep\\.]", seps, value = TRUE) #ZASTO OVO NE RADI
+grep("[^S]", seps, value = TRUE)
+#ne radi ni samo s ni Sep :(
+grep("^[^Sep\\.]",seps, value = TRUE) #ovo radi samo za Sep. na pocetku
+grep("[^(Sep.)]", seps, value = TRUE) #I DALJE NE RADI
+#preko neke druge funkcije grepa
+```
+
+- elements that contain the word de as a whole word.  
+```{r}
+dexample<-c("de", "jasamdebos","determinanta","namede", "de mencija")
+grep("de\\s", dexample, value = TRUE) #sad mi vraca samo de mencij. definirati na pocetku ili kraju rijeci ili ne specificirati preko razmaka
+```
+
+
+
+### Grep 2  
+12 points 
+
+Create a regular expression pattern that matches all elements of the following form (different regular expression for each sub-exercise): (If it is not stated otherwise, there can be any amount of any kinds of characters before of after the expression that we are searching for)  
+
+A) First character is a digit, followed by 16 letters, followed by 0 or more digits, followed by one or more question marks.
+```{r}
+sixteen<-c("1fdjeilrmvtiskrld432?", "jfklaj", "58290375fjkla","345faktiepsvldskrop222??")
+grep("^[0-9][a-zZ-a]{16}[0-9]*\\?+", sixteen, value = TRUE)
+```
+
+B) First three characters are alphanumeric (digits or letters), followed by one or more letters that are not „z“ nor „Z“ nor „a“ nor „A“, followed by „+“.  
+```{r}
+exB<-c("f10aslfkric+","jkglsfdj","34tjfskldjg+","123zadAr+", "zazazaz")
+grep("[a-zA-Z0-9]{3}[^zZAa]+\\+", exB, value = TRUE) #OPET NE RADI [^]!!!!!!
+```
+
+C) First three characters are digits (0, 1, 2 or 3) that are then repeated, followed by zero or more letters, followed by repeated digits.
+```{r}
+exC<-c("012321fhg012323","123120312301203", "fjalkjf12300321", "012012ssss012012","11111111ddddd22222222")
+grep("^([0-3]{3})\\1[a-zA-Z]*[0-3]{3}", exC, value = TRUE)
+
+#nisam 100% zasto radi :D
+```
+
+
+D) Some character is a digit followed by a “.”  
+```{r}
+exD<-c("2.","5798230.","3.43.3.4","483290")
+grep("[0-9]\\.", exD, value = TRUE)
+```
+
+E) First character is a letter “b” (lower case only) followed by 5 or more alphanumeric characters, followed by anything and ending with a number.  
+```{r}
+exE<-c("a841098jfj483092","b123f5anything0","sonja","sonjaibik","B123f5anything0")
+grep("^b[a-zA-Z0-9]{5,}.+[0-9]$", exE, value = TRUE)
+
+#pitat za [:anum:] iz cheat sheeta
+```
+
+
+F) Digit is second to last.
+```{r}
+exF<-c("jfdkls4k","123444","dkksljd3djkla", "dkjaslc")
+grep("[0-9][a-zA-Z0-9]$",exF, value = TRUE)
+```
+
+G) First two characters are letters followed by any 5 digits larger then 2, and followed by first 7 (characters + digits) repeated.
+```{r}
+exG<-c("ss34567ss34567", "fjkaclds49rfjal","dd12345dd12345","123123")
+grep("(^[a-zA-Z]{2}[3-9]{5})\\1", exG, value = TRUE)
+```
+
+H) Anything, then “ENSG” followed by any number of 0s, followed by any number of digits. Extract only the non zero digits from this.
+```{r}
+exH<-c("anythingENSG000012345","anythingENSG", "loliksdeENSG0065789")
+stringH<-grep(".*ENSG0*[0-9]*", exH, value = TRUE)
+extractedH<-regmatches(stringH, gregexpr("[1-9]", stringH))
+extractedH
+```
+
+I) First "GRP1" then either "GRP1" or "GRP2" then "GRP2" then either "GRP1" or "GRP2", as a substring (not necesary to be in the beginning or the end) 
+```{r}
+exI<-c("GRP1GRP1GRP2GRP2", "GRP2GRP1GRP2GRP1","GRP3GRP2GRP1GRP1", "GRP1GRP2GRP2GRP2")
+grep("GRP1(GRP1|GRP2)GRP2(GRP1|GRP2)", exI, value=TRUE)
+```
+
+
+J) Words containing "@SomeNickname" and after that any number of any of the words "secret" "report" or "spy"  
+```{r}
+ex007<-c("@SomeNicknamesecretsecretreportspyspy","@SomeNicknamesecret", "@fhjsakl", "spy", "secretspy", "@SomeNicknamespyreportsecret")
+grep("@SomeNickname(secret|report|spy)", ex007, value = TRUE)
+```
+
+K) Words containing "@SomeNickname" and after that any number of all of the words "secret" "report" or "spy", in any order  
+```{r}
+ex008<-c("@SomeNicknamesecretspyreport", "@SomeNicknamespyspyreportsecretsecret","@SomeNicknamespysecret","@SomeNickname3492058")
+grep("@SomeNickname(secret&report&spy)", ex008, value = TRUE)
+
+#KRIVO MI JE 
+```
+
+L) Words containing "@SomeNickname", "secret", "spy", "report" where all of the words are repeated 2 or more times, and ending with "@SomeOtherN^ckn?me"
+```{r}
+ex009<-c("@SomeNickname@SomeNicknamesecretsecretspyspyreportreport@SomeOtherN^ckn?me","@SomeNicknamePLSNOTTHISAGAIN")
+grep("(@SomeNickname){2,}(secret){2,}(spy){2,}(report){2,}(@SomeOtherN\\^ckn\\?me)",ex009, value = TRUE)
+```
+
+
+
+### 3 Extract from fasta  
+18 points in total  
+
+**Solve this exercise with data.table wherever possible. Use the stringr package (for example str_extract function or others) in this exercise where needed.**  
+
+File Mousechr12genes.txt contains sequences for all genes on mouse chromosome 12. Exons are shown as capital letters, while introns are shown as lower case letters. You can add new columns to the following data table as you need them. Make sure that you explain what they mean. Explain what you are doing if neccessary.  
+
+```{r}
+library(data.table)
+library(stringr)
+?fread
+mouseChr12Genes <- fread("http://hex.bioinfo.hr/~mfabijanic/Mousechr12genes.txt", nrows=5000, header = F)
+head(mouseChr12Genes,10)
+mouseChr12Genes
+mouse12Genes<-readLines("http://hex.bioinfo.hr/~mfabijanic/Mousechr12genes.txt") #radi! yay!
+
+
+```
+PART 1: 6  points 
+Make a data.table containing the following columns (from mouseChr12Genes):
+- column TranscriptID containing transcript IDs extracted from headers (transcript ID is for example ENSMUST00000178074.7)
+```{r}
+mousepatternID<-grep("ENSMUST[0-9]*\\.[0-9]", mouse12Genes, value = TRUE)
+mousepatternID
+mouseID<-regmatches(mousepatternID, gregexpr("ENSMUST[0-9]*\\.[0-9]", mousepatternID))
+mouseID
+mouseDT<-as.data.table(unlist(mouseID))
+names(mouseDT)<-c("TranscriptID")
+```
+
+- chr : containing chromosomes
+```{r}
+mousepatternCHR<-grep("chr12\\:[0-9]*-*[0-9]*\\s", mouse12Genes, value = TRUE)
+mousepatternCHR
+mouseCHR<-c(regmatches(mousepatternCHR, gregexpr("chr12\\:[0-9]*-*[0-9]*\\s", mousepatternCHR)))
+mouseCHR
+mouseCHRDcol<-t(mouseCHR)
+mouseCHRDT<-as.data.table(unlist(mouseCHRDcol))
+names(mouseCHRDT)<-c("Chr")
+mouseDT<-cbind(mouseDT,mouseCHRDT)      
+#ne radi sa ':=' i data tableom. ne znam zakaj         
+```
+
+- chrStart : containing start of the gene, in the orientation as it is transcribed 
+```{r}
+mouseCHunlist<-unlist(mouseCHR)
+mousestart<-unlist(regmatches(mouseCHunlist, gregexpr("[0-9]*\\-", mouseCHunlist)))
+chrStartlist<-regmatches(mousestart, gregexpr("[0-9]*", mousestart))
+startunlisted<-unlist(chrStartlist)
+chrStart<-startunlisted[c(TRUE,FALSE)]
+names(chrStart)<-c("chrStart")
+mouseDT<-cbind(mouseDT, chrStart)
+```
+
+- same with chrEnd 
+```{r}
+mouseCHunlist<-unlist(mouseCHR)
+mouseend<-unlist(regmatches(mouseCHunlist, gregexpr("\\-[0-9]*", mouseCHunlist)))
+endunlisted<-unlist(regmatches(mouseend, gregexpr("[0-9]*", mouseend)))
+chrEnd<-endunlisted[c(FALSE,TRUE)]
+names(chrEnd)<-c("chrEnd")
+mouseDT<-cbind(mouseDT, chrEnd)
+
+```
+
+- Sequence: containing entire gene sequence
+```{r}
+library(stringr)
+unlistedmouse<-unlist(mouse12Genes)
+pastedmouse<-sapply(unlistedmouse, FUN=str_c, collapse="", sep="", simplify = TRUE) #ovo mi uopce ne radi :(  niti u jednoj kombinaciji unlistanja :( :(
+extract1<-unlist(regmatches(pastedmouse, gregexpr(".none[atcgATCG]{1,}>", pastedmouse)))
+extract2<-unlist(regmatches(extract1, gregexpr("[atcgATCG]{1,}", extract1)))
+Sequence<-as.data.table(extract2)
+```
+
+- CodingSequence: containing only coding sequence (only exons, pasted together to one sequence.)  
+```{r}
+
+
+```
+PART 2: 2 points:  
+Create a list named Introns, every element is named as a transcript, elements of list are separate introns from that transcript
+
+```{r}
+
+```
+
+
+PART 3: 5 points:  
+
+A) Visualise lengths of first introns compared to lengths of all non first introns. (Be careful of the orientation!)  
+B) Since there are more non first introns than first introns, choose randomly same number of non first introns as there are first introns and visualise length ditribution in 2 different ways.  
+C) Repeat B) 1000 times to get the feeling of variance of lengths based on different subsetting. Visualize appropriately by barplot - first bar is mean of lengths for first introns, and second bar is mean of lengths for non first introns but with a tick added representing where 95% of lengths fall into.  
+D) Repeat C) but show + and - strand genes in divided plots.  
+E) Inspect visually if there is a connection between length of coding sequence and length of first intron for every transcript.  
+```{r}
+
+```
+
+
+PART 4: 5 points:  
+Adding gene information:
+A) From Biomart download gene IDs and associated transcriptIDs for chromosome 12. Add GeneID column to your data frame.  
+B) One gene can have multiple transcripts. Repeat l) but only with longest transcript for each gene.  
+C) For each gene calculate the number of transcripts. Visualise separately for - and + strands.  
+D) Visualise number of exons per transcript, by groups of numbers of transcripts for each gene. (x axis has numbers of transcript per gene, y axis shows number of exons per each transcript in genes that are in this group). Do this with boxplot.  
+E) Again, repeat p with violin plot.  
+
+```{r}
+
+```
+
+### 4 Kmeans clustering  
+10 points  
+Use data.table for this exercise.
+
+Create a function that does heuristic k-means clustering (name it My.k.means) and plots the final result (final Voronoi regions should be visible). It should work as kmeans function but you are not allowed to use it in your implementation. It should also return the result containing positions of the centroids (Cluster means) and indication which input point belongs to which centroid (Clustering vector). You need to do multiple runs (position centroids at random before each run) in order to find the consensus centroid position. (You also want to do multiple runs until the algorithm converges!) If points are defined in a space with more than 2 dimensions you do not need to do the plotting.  
+
+Example of built kmeans function:  
+```{r}
+kmeans(iris[,1:3],3)
+proba<-c(3.4,3.5,3.2,3.5,3.6,5.6,5.4,5.2,5.7,5.3,8.1,8.9,8.4,3.4,7.9)
+My.k.means<-function(df, k){
+  centroids<-sample(df, k, replace=TRUE)
+  distances<-abs(df-centroids)
+  return (centroids)
+  return(distances)}
+My.k.means(proba, 3)
+
+#NE ZNAM
+```
+  
+
+### 5. LTRs in mouse 
+
+Use data.table for this exercise.
+Read in table [RepeatMaskerMousechr12](http://hex.bioinfo.hr/~mfabijanic/RepeatMaskerMousechr12). It contains locations of repeats for mouse chromosome 12. Table "filtering.csv" contains other information about repeats that we are interested in. Here is schema about RepeatMasker table:
+![Repeat Masker table schema.](D:/mkuzman/KOLEGIJI/2017/Algoritmi/2017/Lecture 3/tableSchema.JPG)
+
+```{r}
+library(data.table)
+rm_table <- fread("http://hex.bioinfo.hr/~mfabijanic/RepeatMaskerMousechr12")
+translator <- read.csv("http://hex.bioinfo.hr/~mfabijanic/filtering.csv", header=F)
+```
+
+A) 2 points  
+From the table get only rows containing information about repeats with RepName from filtering.csv table, column 2
+
+B) 1 point  
+Visualise lengths of LTR elements by classes (RepName) as a single histogram: 
+
+C) 1 point  
+visualise histograms of RepName lengths separately:
+
+D) 2 points  
+Visualise lengths for Classes in filtering.csv separately, with density graphs showing for each RepName belonging to a class. Use transparency 0.5.
+
+E) 3 points  
+Show the class and RepName and both histograms and density plot (make only the line visible from density plot)
+
+F) 4 points  
+Filter each LTR element based on length, keeping only those in range of column 3 - column 4 from filtering.txt. Make a plot where histogram of old values are on the left and histogram for new values are on the right (adjust levels of the factor for correct positioning). Plot should look like this:
+```{r}
+rm_table$From <-  as.data.table(translator[as.character(rm_table$RepName),"V3"])
+rm_table$To <-  as.data.table(translator[as.character(rm_table$RepName),"V4"]
+```
+
+G) 2 points  
+Visualise percentage of each class lost in filtering:
+
+
